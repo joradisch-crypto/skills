@@ -343,7 +343,7 @@ const NICHES = [
 // ═══════════════════════════════════════════════════════
 // STATE
 // ═══════════════════════════════════════════════════════
-let CFG = null;         // {apiKey, binId}
+let CFG = {apiKey: "$2a$10$MxL6gs/.eW3yTTRA2EHqQuo70fm4onIyJiJYKTwjXpSc50b3vwYRG", binId: "69a49504d0ea881f40e559ae"};
 let SESSION = null;     // {members:[...], responses:{name:{ci_si:rating}}}
 let CURRENT_NAME = null;
 let LOCAL_RATINGS = {}; // ratings being filled in right now
@@ -735,23 +735,18 @@ function showScreen(id) {
 // INIT
 // ═══════════════════════════════════════════════════════
 (async function init() {
-  if (!loadConfig()) {
-    showScreen('screen-config');
-    return;
-  }
-  showLoader('Connecting...');
+  showLoader("Connecting...");
   try {
     SESSION = await binRead();
     hideLoader();
     if (SESSION && SESSION.members && SESSION.members.length > 0) {
       showPick();
     } else {
-      showScreen('screen-setup');
+      showScreen("screen-setup");
     }
   } catch(e) {
     hideLoader();
-    // Config might be stale
-    showScreen('screen-config');
+    alert("Could not connect. Check your internet connection.\n\nError: " + e.message);
   }
 })();
 </script>
