@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Team Skills Inventory — MBA 6265</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #1c1c2e;
+  --cream: #f5f1eb;
+  --rust: #bf3b2f;
+  --gold: #c9973a;
+  --sage: #3d7a56;
+  --steel: #4a6fa5;
+  --muted: #888;
+  --border: #e2dbd0;
+  --card: #ffffff;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--ink);min-height:100vh}
+.screen{display:none}.screen.active{display:block}
+
+/* NAV */
+nav{background:var(--ink);padding:0.85rem 1.5rem;display:flex;align-items:center;justify-content:space-between}
+.nav-brand{font-size:0.7rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold)}
+.nav-btn{background:transparent;border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.7);padding:0.35rem 0.85rem;border-radius:6px;font-family:'DM Sans',sans-serif;font-size:0.75rem;cursor:pointer;transition:all 0.2s}
+.nav-btn:hover{border-color:var(--gold);color:var(--gold)}
+
+/* LAYOUT */
+.container{max-width:640px;margin:0 auto;padding:2rem 1.25rem 5rem}
+
+/* TYPOGRAPHY */
+.eyebrow{font-size:0.68rem;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:0.5rem}
+h1{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,5vw,2.6rem);line-height:1.1;color:var(--ink)}
+h2{font-family:'Playfair Display',serif;font-size:1.4rem;color:var(--ink)}
+h3{font-size:0.95rem;font-weight:600;color:var(--ink)}
+.lead{color:#666;font-size:0.9rem;line-height:1.7;margin-top:0.6rem}
+
+/* CARDS */
+.card{background:var(--card);border-radius:14px;border:1px solid var(--border);padding:1.5rem;margin-bottom:1rem;box-shadow:0 2px 12px rgba(0,0,0,0.04)}
+.card-dark{background:var(--ink);color:white;border:none}
+.card-dark .lead{color:rgba(255,255,255,0.6)}
+.card-amber{background:#fef8ee;border-color:#f0d9a0}
+
+/* INPUTS */
+input[type=text]{width:100%;padding:0.65rem 0.9rem;border:1.5px solid var(--border);border-radius:9px;font-family:'DM Sans',sans-serif;font-size:0.9rem;background:var(--cream);transition:border-color 0.2s;color:var(--ink)}
+input[type=text]:focus{outline:none;border-color:var(--rust);background:white}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:0.4rem;padding:0.75rem 1.5rem;border-radius:9px;border:none;font-family:'DM Sans',sans-serif;font-size:0.88rem;font-weight:600;cursor:pointer;transition:all 0.18s}
+.btn-primary{background:var(--rust);color:white}
+.btn-primary:hover{background:#a8342a;transform:translateY(-1px)}
+.btn-secondary{background:var(--border);color:var(--ink)}
+.btn-secondary:hover{background:#d5cec5}
+.btn-sm{padding:0.45rem 0.9rem;font-size:0.8rem}
+.btn-block{width:100%;justify-content:center}
+.btn:disabled{opacity:0.4;cursor:not-allowed;transform:none!important}
+
+/* MEMBER INPUT ROWS */
+.member-row{display:flex;align-items:center;gap:0.6rem;margin-bottom:0.6rem}
+.member-num{width:28px;height:28px;border-radius:50%;background:var(--ink);color:white;font-size:0.72rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+
+/* PROGRESS */
+.progress-wrap{background:var(--border);border-radius:99px;height:5px;overflow:hidden;margin-bottom:0.4rem}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--rust),var(--gold));border-radius:99px;transition:width 0.3s}
+
+/* SURVEY */
+.rating-legend{display:flex;gap:0.8rem;flex-wrap:wrap;font-size:0.7rem;color:var(--muted);margin-bottom:1.2rem}
+.cat-block{background:white;border:1px solid var(--border);border-radius:14px;padding:1.25rem;margin-bottom:1rem}
+.cat-header{display:flex;align-items:center;gap:0.5rem;margin-bottom:1rem}
+.cat-icon{font-size:1.2rem}
+.skill-row{display:flex;align-items:center;justify-content:space-between;padding:0.6rem 0;border-bottom:1px solid #f5f1eb;gap:0.75rem;flex-wrap:wrap}
+.skill-row:last-child{border-bottom:none}
+.skill-label{flex:1;min-width:140px}
+.skill-label span{display:block;font-size:0.85rem;font-weight:500;color:var(--ink)}
+.skill-label small{font-size:0.72rem;color:var(--muted)}
+.rating-group{display:flex;gap:0.3rem;flex-shrink:0}
+.r-btn{width:34px;height:34px;border-radius:7px;border:1.5px solid var(--border);background:white;font-size:0.8rem;font-weight:700;cursor:pointer;transition:all 0.13s;color:#aaa}
+.r-btn:hover{border-color:var(--gold);color:var(--gold)}
+.r-btn.s1{background:#fdecea;border-color:var(--rust);color:var(--rust)}
+.r-btn.s2{background:#fff3e0;border-color:#e8a020;color:#c07010}
+.r-btn.s3{background:#fffde7;border-color:#d4b800;color:#9a8800}
+.r-btn.s4{background:#eaf4ee;border-color:var(--sage);color:var(--sage)}
+.r-btn.s5{background:#e8f1fa;border-color:var(--steel);color:var(--steel)}
+
+/* STICKY FOOTER */
+.sticky-footer{position:fixed;bottom:0;left:0;right:0;background:white;border-top:1px solid var(--border);padding:0.9rem 1.25rem;display:flex;align-items:center;justify-content:space-between;z-index:100}
+
+/* PICK NAME */
+.name-btn{width:100%;display:flex;align-items:center;justify-content:space-between;padding:0.9rem 1.1rem;border-radius:10px;border:1.5px solid var(--border);background:white;font-family:'DM Sans',sans-serif;font-size:0.9rem;font-weight:500;cursor:pointer;transition:all 0.15s;margin-bottom:0.5rem;color:var(--ink)}
+.name-btn:hover:not(.done){border-color:var(--rust);color:var(--rust)}
+.name-btn.done{border-color:#b7e4c7;background:#f0faf4;color:var(--sage);cursor:default}
+.badge{font-size:0.68rem;font-weight:700;padding:0.2rem 0.55rem;border-radius:20px}
+.badge-done{background:#c8f0d8;color:var(--sage)}
+.badge-pending{background:#f0f0f0;color:#aaa}
+
+/* RESULTS */
+.bar-row{display:flex;align-items:center;gap:0.7rem;margin-bottom:0.5rem;flex-wrap:wrap}
+.bar-label{width:175px;font-size:0.82rem;font-weight:500;color:#444;flex-shrink:0}
+.bar-track{flex:1;min-width:80px;background:var(--border);border-radius:99px;height:9px;overflow:hidden}
+.bar-fill{height:100%;border-radius:99px;transition:width 0.8s ease}
+.bar-val{width:32px;text-align:right;font-size:0.78rem;font-weight:700;color:#666}
+.niche-card{background:rgba(255,255,255,0.07);border-radius:10px;padding:1rem;margin-bottom:0.75rem}
+.niche-num{width:22px;height:22px;border-radius:50%;background:var(--gold);color:var(--ink);font-size:0.7rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.strength-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:1.25rem}
+.mini-card{background:white;border-radius:10px;border:1px solid var(--border);padding:1rem}
+.mini-card h4{font-size:0.72rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.6rem}
+.mini-card h4.green{color:var(--sage)}
+.mini-card h4.red{color:var(--rust)}
+.skill-line{display:flex;justify-content:space-between;align-items:center;padding:0.4rem 0;border-bottom:1px solid #f5f1eb;font-size:0.78rem}
+.skill-line:last-child{border-bottom:none}
+.chip{display:inline-block;font-size:0.7rem;font-weight:600;padding:0.2rem 0.6rem;border-radius:20px;margin:0.15rem}
+.chip-done{background:#d4f4e2;color:var(--sage)}
+.chip-wait{background:#f0f0f0;color:#aaa}
+textarea{width:100%;font-family:monospace;font-size:0.75rem;border:1.5px solid var(--border);border-radius:9px;padding:0.8rem;resize:vertical;min-height:110px;background:var(--cream);color:var(--ink)}
+
+/* SETUP STEPS */
+.step-item{display:flex;gap:0.8rem;align-items:flex-start;margin-bottom:0.75rem}
+.step-circle{width:24px;height:24px;border-radius:50%;background:var(--gold);color:var(--ink);font-size:0.72rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+
+/* LOADER */
+.loader{display:flex;align-items:center;justify-content:center;height:60vh;flex-direction:column;gap:1rem;color:var(--muted);font-size:0.9rem}
+.spinner{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--rust);border-radius:50%;animation:spin 0.8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* JSONBIN CONFIG SCREEN */
+.config-notice{background:#fff8e6;border:1px solid #f0d070;border-radius:10px;padding:1rem;margin-bottom:1rem;font-size:0.82rem;line-height:1.6;color:#7a5800}
+code{background:#f0ece5;padding:0.1rem 0.35rem;border-radius:4px;font-size:0.8rem;color:var(--rust)}
+
+@media(max-width:480px){
+  .strength-grid{grid-template-columns:1fr}
+  .bar-label{width:130px;font-size:0.75rem}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand">MBA 6265 · Skills Inventory</div>
+  <button class="nav-btn" id="nav-results-btn" onclick="goResults()" style="display:none">View Results</button>
+</nav>
+
+<!-- SCREEN: CONFIG (first-time setup of JSONBin) -->
+<div class="screen active" id="screen-config">
+  <div class="container">
+    <div style="margin-bottom:2rem;padding-top:1rem">
+      <div class="eyebrow">Step 1 of 2 — Backend Setup</div>
+      <h1>Connect a Storage Bin</h1>
+      <p class="lead">This app uses JSONBin.io (free) to store responses so your whole team shares the same data from any device.</p>
+    </div>
+
+    <div class="config-notice">
+      ⚠️ You only do this once. After setup, just share your GitHub Pages URL and everyone connects automatically.
+    </div>
+
+    <div class="card">
+      <h3 style="margin-bottom:1rem">Quick Setup (2 minutes)</h3>
+      <div class="step-item">
+        <div class="step-circle">1</div>
+        <div style="font-size:0.85rem;line-height:1.6">Go to <strong><a href="https://jsonbin.io" target="_blank" style="color:var(--rust)">jsonbin.io</a></strong> and create a free account (just email + password).</div>
+      </div>
+      <div class="step-item">
+        <div class="step-circle">2</div>
+        <div style="font-size:0.85rem;line-height:1.6">After logging in, click <strong>"+ Create Bin"</strong>, paste in <code>{"members":[],"responses":{}}</code> as the content, and click Save. Copy the <strong>Bin ID</strong> from the URL (it looks like <code>64a3f...</code>).</div>
+      </div>
+      <div class="step-item">
+        <div class="step-circle">3</div>
+        <div style="font-size:0.85rem;line-height:1.6">Go to your <strong>Account → API Keys</strong> and copy your <strong>Access Key</strong>.</div>
+      </div>
+      <div class="step-item">
+        <div class="step-circle">4</div>
+        <div style="font-size:0.85rem;line-height:1.6">Paste both below and click Save.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div style="margin-bottom:0.75rem">
+        <label style="font-size:0.8rem;font-weight:600;display:block;margin-bottom:0.3rem">JSONBin Access Key (API Key)</label>
+        <input type="text" id="cfg-apikey" placeholder="$2b$10$abc123..." />
+      </div>
+      <div style="margin-bottom:1rem">
+        <label style="font-size:0.8rem;font-weight:600;display:block;margin-bottom:0.3rem">Bin ID</label>
+        <input type="text" id="cfg-binid" placeholder="64a3f8b2e3..." />
+      </div>
+      <button class="btn btn-primary btn-block" onclick="saveConfig()">Save & Continue →</button>
+    </div>
+
+    <div class="card card-dark">
+      <div style="color:var(--gold);font-weight:600;margin-bottom:0.5rem;font-size:0.9rem">🔒 Privacy note</div>
+      <p class="lead" style="font-size:0.82rem">Your API key and bin ID are stored only in your browser's localStorage — they never leave your device except to talk to JSONBin directly. The bin itself is private by default on JSONBin.</p>
+    </div>
+  </div>
+</div>
+
+<!-- SCREEN: SETUP (enter team members) -->
+<div class="screen" id="screen-setup">
+  <div class="container">
+    <div style="padding-top:1.5rem;margin-bottom:1.5rem">
+      <div class="eyebrow">Step 2 of 2 — Team Setup</div>
+      <h1>Who's on your team?</h1>
+      <p class="lead">Enter names exactly — teammates will select their name from a list when they open the app.</p>
+    </div>
+
+    <div class="card">
+      <div id="member-inputs">
+        <div class="member-row"><div class="member-num">1</div><input type="text" class="mname" placeholder="Team member name"></div>
+        <div class="member-row"><div class="member-num">2</div><input type="text" class="mname" placeholder="Team member name"></div>
+        <div class="member-row"><div class="member-num">3</div><input type="text" class="mname" placeholder="Team member name"></div>
+        <div class="member-row"><div class="member-num">4</div><input type="text" class="mname" placeholder="Team member name"></div>
+      </div>
+      <div style="display:flex;gap:0.5rem;margin-top:0.75rem">
+        <button class="btn btn-secondary btn-sm" onclick="addMember()">+ Add</button>
+        <button class="btn btn-secondary btn-sm" onclick="removeMember()">− Remove</button>
+      </div>
+    </div>
+
+    <div class="card card-amber">
+      <div style="font-size:0.82rem;line-height:1.7;color:#7a5000">
+        <strong>After clicking Start:</strong> Share your GitHub Pages URL (e.g. <code>yourname.github.io/skills</code>) in your group chat. Teammates open it, pick their name, and fill out their survey. You can check results any time.
+      </div>
+    </div>
+
+    <button class="btn btn-primary btn-block" onclick="startSession()" style="margin-top:0.5rem">Start Session →</button>
+    <button class="btn btn-secondary btn-sm" onclick="reconfigure()" style="margin-top:0.75rem;display:block">← Change JSONBin settings</button>
+  </div>
+</div>
+
+<!-- SCREEN: PICK NAME -->
+<div class="screen" id="screen-pick">
+  <div class="container" style="padding-top:1.5rem">
+    <div class="eyebrow">Team Skills Inventory</div>
+    <h1 style="margin-bottom:0.4rem">Who are you?</h1>
+    <p class="lead" style="margin-bottom:1.5rem">Select your name to begin your self-assessment.</p>
+    <div id="name-list"></div>
+    <div style="margin-top:1.5rem;text-align:center">
+      <button class="btn btn-secondary" onclick="goResults()">📊 View Team Results</button>
+    </div>
+  </div>
+</div>
+
+<!-- SCREEN: SURVEY -->
+<div class="screen" id="screen-survey">
+  <div class="container" style="padding-top:1.5rem">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem;flex-wrap:wrap;gap:0.5rem">
+      <div>
+        <div class="eyebrow">Self-Assessment</div>
+        <h2 id="survey-name-heading">Your Name</h2>
+      </div>
+      <button class="btn btn-secondary btn-sm" onclick="showPick()">← Back</button>
+    </div>
+    <div class="progress-wrap"><div class="progress-fill" id="survey-prog" style="width:0%"></div></div>
+    <div style="font-size:0.72rem;color:var(--muted);margin-bottom:1rem" id="survey-prog-label">0 of 24 rated</div>
+    <div class="rating-legend">
+      <span>1 = No experience</span><span>2 = Basic</span><span>3 = Competent</span><span>4 = Proficient</span><span>5 = Expert</span>
+    </div>
+    <div id="survey-body"></div>
+  </div>
+  <div class="sticky-footer">
+    <span style="font-size:0.8rem;color:var(--muted)" id="footer-count">0 / 24</span>
+    <button class="btn btn-primary" id="submit-btn" onclick="submitSurvey()">Submit →</button>
+  </div>
+</div>
+
+<!-- SCREEN: DONE -->
+<div class="screen" id="screen-done">
+  <div class="container" style="padding-top:3rem;text-align:center">
+    <div style="font-size:3.5rem;margin-bottom:1rem">✅</div>
+    <h2 id="done-name" style="margin-bottom:0.5rem">Thanks!</h2>
+    <p class="lead" style="margin-bottom:2rem" id="done-msg">Your responses have been saved.</p>
+    <button class="btn btn-secondary" onclick="showPick()">← Back to team list</button>
+  </div>
+</div>
+
+<!-- SCREEN: RESULTS -->
+<div class="screen" id="screen-results">
+  <div class="container" style="padding-top:1.5rem">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.25rem">
+      <div class="eyebrow">Team Results</div>
+      <button class="btn btn-secondary btn-sm" onclick="showPick()">← Back</button>
+    </div>
+    <h1 style="margin-bottom:0.3rem">Skills Profile</h1>
+    <div id="results-meta" style="font-size:0.8rem;color:var(--muted);margin-bottom:0.5rem"></div>
+    <div id="results-chips" style="margin-bottom:1.5rem;display:flex;flex-wrap:wrap;gap:0.3rem"></div>
+    <div id="results-body"></div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════════════════
+const CATS = [
+  { name:"Industry Knowledge", icon:"🏛️", skills:[
+    {l:"Public Sector / Government",h:"Federal, provincial, or municipal"},
+    {l:"Financial Services",h:"Banking, insurance, capital markets"},
+    {l:"Healthcare / Life Sciences",h:"Hospitals, pharma, public health"},
+    {l:"Technology / Digital",h:"Software, IT, AI, cyber"},
+  ]},
+  { name:"Strategy & Analysis", icon:"🎯", skills:[
+    {l:"Strategic Planning",h:"Vision, mission, competitive positioning"},
+    {l:"Business Case Development",h:"ROI analysis, cost-benefit"},
+    {l:"Market Research & Analysis",h:"Sizing, trends, competitive intel"},
+    {l:"Data Analysis / Quantitative",h:"Excel, stats, modelling"},
+  ]},
+  { name:"Operations & Implementation", icon:"⚙️", skills:[
+    {l:"Process Improvement / Lean",h:"Workflow redesign, efficiency"},
+    {l:"Project Management",h:"Planning, scheduling, PMO"},
+    {l:"Change Management",h:"People-side of change"},
+    {l:"Program Evaluation",h:"Results-based management, KPIs"},
+  ]},
+  { name:"People & HR", icon:"👥", skills:[
+    {l:"Human Resources Management",h:"Talent, compensation, labour"},
+    {l:"Organizational Design",h:"Structure, spans, governance"},
+    {l:"Learning & Development",h:"Training, capability building"},
+    {l:"Leadership Coaching",h:"Executive coaching, assessments"},
+  ]},
+  { name:"Technology & Digital", icon:"💻", skills:[
+    {l:"Digital Transformation",h:"Tech-enabled business change"},
+    {l:"IT Strategy & Architecture",h:"Enterprise systems, roadmaps"},
+    {l:"Cybersecurity / Risk",h:"Security frameworks, GRC"},
+    {l:"Data / Analytics / AI",h:"BI, ML, data governance"},
+  ]},
+  { name:"Consulting Craft", icon:"🧩", skills:[
+    {l:"Client Relationship Management",h:"Trust-building, account growth"},
+    {l:"Proposal & Report Writing",h:"Structured writing, storytelling"},
+    {l:"Presentation / Facilitation",h:"Workshops, stakeholder sessions"},
+    {l:"French / Bilingual",h:"Ability to serve bilingual clients"},
+  ]},
+];
+const TOTAL = CATS.reduce((s,c)=>s+c.skills.length,0);
+
+const NICHES = [
+  {title:"Government Strategy & Performance Management",n1:"Public Sector Digital Transformation",n2:"Program Evaluation & Results-Based Management",why:"Ottawa firms with gov't knowledge + strategy skills are highly competitive for federal contracts.",cats:["Industry Knowledge","Strategy & Analysis"]},
+  {title:"Workforce & Organizational Effectiveness",n1:"Organizational Design & HR Transformation",n2:"Change Management & Culture Building",why:"Major demand as organizations restructure. Pairs well with strong people + operations skills.",cats:["People & HR","Operations & Implementation"]},
+  {title:"Digital Operations & Technology Advisory",n1:"Digital Transformation Strategy",n2:"IT Process Improvement & Automation",why:"Technology-enabled operations is the fastest-growing consulting segment across all sectors.",cats:["Technology & Digital","Operations & Implementation"]},
+  {title:"Healthcare & Public Sector Strategy",n1:"Health System Planning & Performance",n2:"Public Policy Analysis & Stakeholder Engagement",why:"Niche with few large incumbents outside Big 4 — strong differentiation opportunity.",cats:["Industry Knowledge","Strategy & Analysis"]},
+  {title:"People Analytics & HR Tech",n1:"Workforce Planning & Analytics",n2:"Learning Organization & Talent Strategy",why:"Emerging niche combining data skills with HR expertise — few firms do this well in Canada.",cats:["People & HR","Technology & Digital"]},
+  {title:"Operational Excellence & Process Innovation",n1:"Lean Management & Process Redesign",n2:"Project Portfolio & PMO Advisory",why:"Strong implementation-focused niche — complements strategy boutiques as execution partners.",cats:["Operations & Implementation","Strategy & Analysis"]},
+  {title:"Financial Services Advisory",n1:"Risk & Compliance Consulting",n2:"FinTech Strategy & Digital Banking",why:"High-margin niche with strong demand in Toronto and growing demand in Ottawa.",cats:["Industry Knowledge","Technology & Digital"]},
+];
+
+// ═══════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════
+let CFG = null;         // {apiKey, binId}
+let SESSION = null;     // {members:[...], responses:{name:{ci_si:rating}}}
+let CURRENT_NAME = null;
+let LOCAL_RATINGS = {}; // ratings being filled in right now
+
+// ═══════════════════════════════════════════════════════
+// JSONBIN API
+// ═══════════════════════════════════════════════════════
+async function binRead() {
+  const r = await fetch(`https://api.jsonbin.io/v3/b/${CFG.binId}/latest`, {
+    headers:{'X-Master-Key': CFG.apiKey, 'X-Bin-Meta': 'false'}
+  });
+  if (!r.ok) throw new Error('Read failed: ' + r.status);
+  const data = await r.json();
+  if (!data || typeof data !== 'object') return {members:[], responses:{}};
+  if (!data.members) data.members = [];
+  if (!data.responses) data.responses = {};
+  return data;
+}
+
+async function binWrite(data) {
+  const r = await fetch(`https://api.jsonbin.io/v3/b/${CFG.binId}`, {
+    method:'PUT',
+    headers:{'Content-Type':'application/json','X-Master-Key': CFG.apiKey},
+    body: JSON.stringify(data)
+  });
+  if (!r.ok) throw new Error('Write failed: ' + r.status);
+  return r.json();
+}
+
+// ═══════════════════════════════════════════════════════
+// CONFIG
+// ═══════════════════════════════════════════════════════
+function loadConfig() {
+  const raw = localStorage.getItem('mba6265_cfg');
+  if (raw) { CFG = JSON.parse(raw); return true; }
+  return false;
+}
+function saveConfig() {
+  const apiKey = document.getElementById('cfg-apikey').value.trim();
+  const binId = document.getElementById('cfg-binid').value.trim();
+  if (!apiKey || !binId) { alert('Please enter both the API Key and Bin ID.'); return; }
+  CFG = {apiKey, binId};
+  localStorage.setItem('mba6265_cfg', JSON.stringify(CFG));
+  showLoader('Verifying connection...');
+  fetch(`https://api.jsonbin.io/v3/b/${binId}/latest`, {
+    headers:{'X-Master-Key': apiKey, 'X-Bin-Meta': 'false'}
+  })
+  .then(r => {
+    if (!r.ok) return r.text().then(t => { throw new Error(`HTTP ${r.status}: ${t}`); });
+    return r.json();
+  })
+  .then(data => {
+    if (!data || typeof data !== 'object') data = {};
+    if (!data.members) data.members = [];
+    if (!data.responses) data.responses = {};
+    SESSION = data;
+    hideLoader();
+    if (SESSION.members.length > 0) { showPick(); } else { showScreen('screen-setup'); }
+  })
+  .catch(e => {
+    hideLoader();
+    console.error('JSONBin error:', e);
+    alert('Connection failed.\n\nError: ' + e.message + '\n\nThings to check:\n• Is the Bin ID correct? (just the alphanumeric code, no slashes)\n• Is the X-Master-Key correct? (starts with $2b$10$...)\n• Open browser console (F12) for more detail.');
+  });
+}
+function reconfigure() {
+  showScreen('screen-config');
+}
+
+// ═══════════════════════════════════════════════════════
+// SETUP
+// ═══════════════════════════════════════════════════════
+function addMember() {
+  const wrap = document.getElementById('member-inputs');
+  if (wrap.children.length >= 8) return;
+  const i = wrap.children.length + 1;
+  const row = document.createElement('div');
+  row.className = 'member-row';
+  row.innerHTML = `<div class="member-num">${i}</div><input type="text" class="mname" placeholder="Team member name">`;
+  wrap.appendChild(row);
+}
+function removeMember() {
+  const wrap = document.getElementById('member-inputs');
+  if (wrap.children.length > 2) wrap.removeChild(wrap.lastChild);
+}
+async function startSession() {
+  const names = [...document.querySelectorAll('.mname')].map(i=>i.value.trim()).filter(Boolean);
+  if (names.length < 2) { alert('Please enter at least 2 names.'); return; }
+  showLoader('Saving session...');
+  try {
+    // Preserve existing responses if reusing
+    const existing = SESSION && SESSION.responses ? SESSION.responses : {};
+    SESSION = {members: names, responses: existing};
+    await binWrite(SESSION);
+    hideLoader();
+    showPick();
+  } catch(e) {
+    hideLoader();
+    alert('Could not save session: ' + e.message);
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// PICK NAME
+// ═══════════════════════════════════════════════════════
+async function showPick() {
+  showLoader('Loading team...');
+  try {
+    SESSION = await binRead();
+    hideLoader();
+  } catch(e) {
+    hideLoader();
+    alert('Could not load data: ' + e.message);
+    return;
+  }
+  const responded = Object.keys(SESSION.responses || {});
+  const list = document.getElementById('name-list');
+  list.innerHTML = '';
+  (SESSION.members || []).forEach(name => {
+    const done = responded.includes(name);
+    const btn = document.createElement('button');
+    btn.className = 'name-btn' + (done ? ' done' : '');
+    btn.innerHTML = `<span>${name}</span><span class="badge ${done?'badge-done':'badge-pending'}">${done?'✓ Done':'Tap to start →'}</span>`;
+    if (!done) btn.onclick = () => startSurvey(name);
+    list.appendChild(btn);
+  });
+  document.getElementById('nav-results-btn').style.display = 'inline-flex';
+  showScreen('screen-pick');
+}
+
+// ═══════════════════════════════════════════════════════
+// SURVEY
+// ═══════════════════════════════════════════════════════
+function startSurvey(name) {
+  CURRENT_NAME = name;
+  LOCAL_RATINGS = {};
+  document.getElementById('survey-name-heading').textContent = name;
+  buildSurveyBody();
+  updateProgress();
+  showScreen('screen-survey');
+  window.scrollTo(0,0);
+}
+
+function buildSurveyBody() {
+  const body = document.getElementById('survey-body');
+  body.innerHTML = '';
+  CATS.forEach((cat, ci) => {
+    const block = document.createElement('div');
+    block.className = 'cat-block';
+    block.innerHTML = `<div class="cat-header"><span class="cat-icon">${cat.icon}</span><strong>${cat.name}</strong></div>`;
+    cat.skills.forEach((skill, si) => {
+      const row = document.createElement('div');
+      row.className = 'skill-row';
+      row.innerHTML = `
+        <div class="skill-label"><span>${skill.l}</span><small>${skill.h}</small></div>
+        <div class="rating-group" id="rg-${ci}-${si}">
+          ${[1,2,3,4,5].map(v=>`<button class="r-btn" onclick="rate(${ci},${si},${v})" id="rb-${ci}-${si}-${v}">${v}</button>`).join('')}
+        </div>`;
+      block.appendChild(row);
+    });
+    body.appendChild(block);
+  });
+}
+
+function rate(ci, si, val) {
+  const key = `${ci}_${si}`;
+  LOCAL_RATINGS[key] = val;
+  for (let v=1;v<=5;v++) {
+    const btn = document.getElementById(`rb-${ci}-${si}-${v}`);
+    btn.className = 'r-btn' + (v===val ? ` s${v}` : '');
+  }
+  updateProgress();
+}
+
+function updateProgress() {
+  const done = Object.keys(LOCAL_RATINGS).length;
+  const pct = Math.round((done/TOTAL)*100);
+  document.getElementById('survey-prog').style.width = pct + '%';
+  document.getElementById('survey-prog-label').textContent = `${done} of ${TOTAL} rated`;
+  document.getElementById('footer-count').textContent = `${done} / ${TOTAL}`;
+}
+
+async function submitSurvey() {
+  const done = Object.keys(LOCAL_RATINGS).length;
+  if (done < TOTAL) {
+    if (!confirm(`You've rated ${done} of ${TOTAL} skills. Unrated ones count as 0. Submit anyway?`)) return;
+  }
+  document.getElementById('submit-btn').disabled = true;
+  document.getElementById('submit-btn').textContent = 'Saving...';
+  try {
+    // Re-read to avoid overwriting another person's concurrent submission
+    SESSION = await binRead();
+    if (!SESSION.responses) SESSION.responses = {};
+    SESSION.responses[CURRENT_NAME] = LOCAL_RATINGS;
+    await binWrite(SESSION);
+    const total = (SESSION.members||[]).length;
+    const responded = Object.keys(SESSION.responses).length;
+    document.getElementById('done-name').textContent = `Thanks, ${CURRENT_NAME}!`;
+    document.getElementById('done-msg').textContent = `Your responses are saved. ${responded} of ${total} team members have responded.`;
+    showScreen('screen-done');
+    window.scrollTo(0,0);
+  } catch(e) {
+    alert('Could not save: ' + e.message);
+    document.getElementById('submit-btn').disabled = false;
+    document.getElementById('submit-btn').textContent = 'Submit →';
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// RESULTS
+// ═══════════════════════════════════════════════════════
+async function goResults() {
+  showLoader('Loading results...');
+  try {
+    SESSION = await binRead();
+    hideLoader();
+  } catch(e) {
+    hideLoader();
+    alert('Could not load results: ' + e.message);
+    return;
+  }
+  renderResults();
+  showScreen('screen-results');
+  window.scrollTo(0,0);
+}
+
+function renderResults() {
+  const members = SESSION.members || [];
+  const responses = SESSION.responses || {};
+  const responded = Object.keys(responses);
+  const n = responded.length;
+
+  document.getElementById('results-meta').textContent = `${n} of ${members.length} responded`;
+  const chips = document.getElementById('results-chips');
+  chips.innerHTML = members.map(m =>
+    `<span class="chip ${responded.includes(m)?'chip-done':'chip-wait'}">${responded.includes(m)?'✓ ':' ⏳ '}${m}</span>`
+  ).join('');
+
+  const body = document.getElementById('results-body');
+  body.innerHTML = '';
+
+  if (n === 0) {
+    body.innerHTML = '<div style="text-align:center;padding:3rem;color:var(--muted)">No responses yet. Share the URL with your team!</div>';
+    return;
+  }
+
+  // Compute averages
+  const avgs = {};
+  CATS.forEach((cat,ci) => cat.skills.forEach((_,si) => {
+    const key = `${ci}_${si}`;
+    const vals = responded.map(name => (responses[name]||{})[key] || 0);
+    avgs[key] = vals.reduce((a,b)=>a+b,0)/n;
+  }));
+
+  const catAvgs = CATS.map((cat,ci) => {
+    const keys = cat.skills.map((_,si)=>`${ci}_${si}`);
+    return {name:cat.name, icon:cat.icon, avg: keys.reduce((s,k)=>s+avgs[k],0)/cat.skills.length};
+  });
+  const catRanked = [...catAvgs].sort((a,b)=>b.avg-a.avg);
+
+  const allFlat = [];
+  CATS.forEach((cat,ci)=>cat.skills.forEach((sk,si)=>allFlat.push({label:sk.l,cat:cat.name,avg:avgs[`${ci}_${si}`]})));
+  allFlat.sort((a,b)=>b.avg-a.avg);
+  const top5 = allFlat.slice(0,5);
+  const bot5 = allFlat.slice(-5).reverse();
+
+  const scored = NICHES.map(s => ({
+    ...s,
+    score: s.cats.reduce((sum,rc)=>{const c=catRanked.find(x=>x.name===rc);return sum+(c?c.avg:0);},0)
+  })).sort((a,b)=>b.score-a.score).slice(0,3);
+
+  // Category bars
+  const catSection = document.createElement('div');
+  catSection.className = 'card';
+  catSection.innerHTML = '<h3 style="margin-bottom:1rem">Category Averages</h3>';
+  catRanked.forEach(cat => {
+    const pct = (cat.avg/5)*100;
+    const color = cat.avg>=4?'#3d7a56':cat.avg>=3?'#4a6fa5':cat.avg>=2?'#c9973a':'#bf3b2f';
+    catSection.innerHTML += `<div class="bar-row">
+      <div class="bar-label">${cat.icon} ${cat.name}</div>
+      <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${color}"></div></div>
+      <div class="bar-val">${cat.avg.toFixed(1)}</div>
+    </div>`;
+  });
+  body.appendChild(catSection);
+
+  // All skills detail
+  const skillSection = document.createElement('div');
+  skillSection.className = 'card';
+  skillSection.innerHTML = '<h3 style="margin-bottom:1rem">All Skills</h3>';
+  CATS.forEach((cat,ci) => {
+    skillSection.innerHTML += `<div style="font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin:1rem 0 0.5rem">${cat.icon} ${cat.name}</div>`;
+    cat.skills.forEach((sk,si) => {
+      const avg = avgs[`${ci}_${si}`];
+      const pct = (avg/5)*100;
+      const color = avg>=4?'#3d7a56':avg>=3?'#4a6fa5':avg>=2?'#c9973a':'#bf3b2f';
+      skillSection.innerHTML += `<div class="bar-row">
+        <div class="bar-label" style="font-size:0.78rem">${sk.l}</div>
+        <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${color}"></div></div>
+        <div class="bar-val">${avg.toFixed(1)}</div>
+      </div>`;
+    });
+  });
+  body.appendChild(skillSection);
+
+  // Strengths + Gaps
+  const sg = document.createElement('div');
+  sg.className = 'strength-grid';
+  sg.innerHTML = `
+    <div class="mini-card">
+      <h4 class="green">🏆 Top Strengths</h4>
+      ${top5.map(s=>`<div class="skill-line"><span>${s.label}</span><strong style="color:var(--sage)">${s.avg.toFixed(1)}</strong></div>`).join('')}
+    </div>
+    <div class="mini-card">
+      <h4 class="red">🔍 Skill Gaps</h4>
+      ${bot5.map(s=>`<div class="skill-line"><span>${s.label}</span><strong style="color:var(--rust)">${s.avg.toFixed(1)}</strong></div>`).join('')}
+    </div>`;
+  body.appendChild(sg);
+
+  // Niche suggestions
+  const nicheCard = document.createElement('div');
+  nicheCard.className = 'card card-dark';
+  nicheCard.innerHTML = `
+    <div style="color:var(--gold);font-weight:700;margin-bottom:0.3rem">💡 Suggested Consulting Niches</div>
+    <p class="lead" style="font-size:0.8rem;margin-bottom:1rem">Based on your collective strengths — use these as brainstorm starting points.</p>
+    ${scored.map((s,i)=>`
+      <div class="niche-card">
+        <div style="display:flex;gap:0.6rem;align-items:flex-start">
+          <div class="niche-num">${i+1}</div>
+          <div>
+            <div style="color:white;font-weight:600;font-size:0.9rem;margin-bottom:0.4rem">${s.title}</div>
+            <div style="font-size:0.8rem;color:rgba(255,255,255,0.7);margin-bottom:0.2rem"><strong style="color:rgba(255,255,255,0.9)">Niche A:</strong> ${s.n1}</div>
+            <div style="font-size:0.8rem;color:rgba(255,255,255,0.7);margin-bottom:0.5rem"><strong style="color:rgba(255,255,255,0.9)">Niche B:</strong> ${s.n2}</div>
+            <div style="font-size:0.75rem;color:rgba(255,255,255,0.45);font-style:italic">${s.why}</div>
+          </div>
+        </div>
+      </div>`).join('')}`;
+  body.appendChild(nicheCard);
+
+  // Export
+  const exportCard = document.createElement('div');
+  exportCard.className = 'card';
+  exportCard.innerHTML = `
+    <h3 style="margin-bottom:0.4rem">📋 Copy for brainstorm notes</h3>
+    <textarea id="export-ta" readonly></textarea>
+    <button class="btn btn-secondary btn-sm" style="margin-top:0.5rem" onclick="copyExport()">Copy to clipboard</button>`;
+  body.appendChild(exportCard);
+
+  document.getElementById('export-ta').value = [
+    `MBA 6265 – Team Skills Inventory`,
+    `Responses: ${responded.join(', ')} (${n}/${members.length})`,
+    ``,`CATEGORY AVERAGES:`,
+    ...catRanked.map(c=>`  ${c.icon} ${c.name}: ${c.avg.toFixed(2)}/5`),
+    ``,`TOP STRENGTHS: ${top5.map(s=>s.label).join(', ')}`,
+    ``,`SKILL GAPS: ${bot5.map(s=>s.label).join(', ')}`,
+    ``,`SUGGESTED NICHES:`,
+    ...scored.map((s,i)=>`  ${i+1}. ${s.title}\n     → ${s.n1} + ${s.n2}`),
+  ].join('\n');
+}
+
+function copyExport() {
+  const ta = document.getElementById('export-ta');
+  ta.select(); document.execCommand('copy');
+  alert('Copied!');
+}
+
+// ═══════════════════════════════════════════════════════
+// LOADER / SCREEN HELPERS
+// ═══════════════════════════════════════════════════════
+let loaderEl = null;
+function showLoader(msg) {
+  if (!loaderEl) {
+    loaderEl = document.createElement('div');
+    loaderEl.style.cssText = 'position:fixed;inset:0;background:rgba(245,241,235,0.92);z-index:999;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:1rem';
+    document.body.appendChild(loaderEl);
+  }
+  loaderEl.innerHTML = `<div class="spinner"></div><div style="font-size:0.88rem;color:var(--muted)">${msg}</div>`;
+  loaderEl.style.display = 'flex';
+}
+function hideLoader() {
+  if (loaderEl) loaderEl.style.display = 'none';
+}
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+// ═══════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════
+(async function init() {
+  if (!loadConfig()) {
+    showScreen('screen-config');
+    return;
+  }
+  showLoader('Connecting...');
+  try {
+    SESSION = await binRead();
+    hideLoader();
+    if (SESSION && SESSION.members && SESSION.members.length > 0) {
+      showPick();
+    } else {
+      showScreen('screen-setup');
+    }
+  } catch(e) {
+    hideLoader();
+    // Config might be stale
+    showScreen('screen-config');
+  }
+})();
+</script>
+</body>
+</html>
